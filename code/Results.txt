@@ -1,6 +1,5 @@
-mAP (k=1000):    0.0198643466965
-mAP (k=10000):   0.0204639714446
-mAP (k=100000):  0.0206037715028
+Popularity baseline: 
+  - mAP (tau=500):    0.022 ~ 0.023
 
-
-mAP (k=1000):    0.0286387489175 (para train_triplets.txt com k=1000)
+Same artist (Greatest hits) baseline: 
+  - mAP (tau=500):    0.032 [quando deveria ser ~0.09, de acordo com o paper que descreve o concurso)
