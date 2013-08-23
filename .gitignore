@@ -37,3 +37,8 @@ nosetests.xml
 data/
 sample_code/
 files/
+.tags
+.tags*
+
+.DS_STORE
+

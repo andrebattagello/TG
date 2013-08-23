@@ -1,7 +1,7 @@
 import numpy
 
 
-def APk(actual, predicted, k=10):
+def APk(actual, predicted, k=500):
     """
     Computes the average precision at k.
 
@@ -40,7 +40,7 @@ def APk(actual, predicted, k=10):
     return score / min(len(actual), k)
 
 
-def mAPk(actual, predicted, k=10):
+def mAPk(actual, predicted, k=500):
     """
     Computes the mean average precision at k.
 
@@ -64,4 +64,5 @@ def mAPk(actual, predicted, k=10):
             The mean average precision at k over the input lists
 
     """
+    print "\n\t- Calculating mAP..."
     return numpy.mean([APk(a, p, k) for a, p in zip(actual, predicted)])
