@@ -280,4 +280,5 @@ class SReco(Reco):
             if not (i+1)%10:
                 print " tot secs: %f (%f)"%(cti,cti/(i+1))
 		fl()
-	return rec4users
+        return rec4users
+
