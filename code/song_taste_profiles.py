@@ -1,22 +1,11 @@
-import cloud
 import datetime
 import glob
 import os
 import utils.hdf5_getters as hdf5getters
 
-# import numpy
-# import sqlite3
-# import sys
-# import time
-
-
 def get_base_path():
-    if cloud.running_on_cloud():
-        base_path = "/data/million_song_data/"
-    else:
-        base_path = "/Users/andrebattagello/Projects/TG/million_song/data/"
-
-    return base_path
+    data_path = os.path.realpath("../data")
+    return data_path
 
 
 subset_path = os.path.join(get_base_path() + "million_song_subset")

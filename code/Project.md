@@ -1,3 +1,20 @@
+AWS EC2 Instance
+
+# Activate crosscompute virtualenv
+export WORKON_HOME=$HOME/.virtualenvs
+source /usr/bin/virtualenvwrapper.sh
+workon crosscompute
+
+
+
+
+
+
+
+# Tools to check
+Yhat
+http://yhathq.com/
+
 Roadmap / Next steps:
 =====================
 

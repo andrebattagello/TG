@@ -1,5 +1,6 @@
 import numpy
 
+# Code taken from https://github.com/benhamner/Metrics/blob/master/Python/ml_metrics/average_precision.py
 
 def APk(actual, predicted, k=500):
     """
@@ -64,5 +65,5 @@ def mAPk(actual, predicted, k=500):
             The mean average precision at k over the input lists
 
     """
-    print "\n\t- Calculating mAP..."
-    return numpy.mean([APk(a, p, k) for a, p in zip(actual, predicted)])
+    print "\t- Calculating mAP for tau = {}".format(k)
+    return numpy.mean([APk(actual, predicted, k) for actual, predicted in zip(actual, predicted)])
