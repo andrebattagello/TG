@@ -1,22 +1,25 @@
+AWS EC2 Instance
+
+# Activate crosscompute virtualenv
+export WORKON_HOME=$HOME/.virtualenvs
+source /usr/bin/virtualenvwrapper.sh
+workon crosscompute
+
+
+
+TODO:
+[ ] Save results
+[ ] Pass default parameters to functions:
+    [ ] number of users in simulation
+    [ ] evaluation ratio
+    [ ] number of users to recommend
+    [ ] read from JSON data
+
+
 Roadmap / Next steps:
 =====================
-
 [ ] Implement baseline results: part I (popularity)
 [ ] Baseline results - part II (artists similarity)
-[ ] Implement/run the code of the winner
-[ ] PhD Ocelma - insights/fundamentals
-[ ] Começar a escrever a tese - motivação/contextualização do problema
-
-
-Cancerização
-============
-
-Install Pytables
-----------------
-http://pytables.github.io/usersguide/installation.html
-
-SQLite query examples:
-    - https://github.com/tb2332/MSongsDB/blob/master/Tasks_Demos/SQLite/demo_track_metadata.py
 
 
 Useful links
@@ -39,7 +42,6 @@ PiCloud useful commands:
 ========================
 List all dirs in my data volume:
 picloud exec -v dataset-volume ls / | xargs picloud result
-
 
 
 Recommender Systems in Python
