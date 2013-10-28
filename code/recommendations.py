@@ -25,8 +25,8 @@ def generate_songs_to_users_json(songs_to_users, filename="results/songs_to_user
 
 def song_similarity_recommendation(read_json_data=False,
                                    write_json_file=False,
-                                   num_of_processes=4,
-                                   max_number_of_users=100):
+                                   num_of_processes=3,
+                                   recommended_users_ratio=0.0001):
     training_data_filename = "basic_data/train_triplets.txt"
 
     # TODO: json.dumps pre computed
@@ -35,7 +35,7 @@ def song_similarity_recommendation(read_json_data=False,
 
     users_to_songs_visible, users_to_songs_complete = main.generate_evaluation_data(
         users_to_songs,
-        ratio=0.005
+        ratio=recommended_users_ratio # 0.0001 ~= 100 users
     )
 
     print "\n\t- Generated evaluation data"
@@ -91,7 +91,7 @@ def song_similarity_recommendation(read_json_data=False,
     results = {
         "number_of_users": len(recommendations),
         "recommendations": recommendations,
-        "listened_songs": listened_songs,
+        "listened_songs": [list(song_set) for song_set in listened_songs],
         "mapk": mapk,
     }
 

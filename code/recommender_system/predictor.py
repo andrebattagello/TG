@@ -45,7 +45,7 @@ class SongSimilatiryPredictor(Predictor):
         self.songs_to_users = songs_to_users
 
     # TODO: implement this!
-    def _pre_compute_all_scores(self, listened_items):
+    def _pre_compute_all_scores(self, listened_items, all_items):
         pass
 
     def score_items(self, user_items, all_items):

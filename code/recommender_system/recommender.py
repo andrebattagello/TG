@@ -153,11 +153,7 @@ class StochasticRecommender(Recommender):
         recommendations_dict = manager.dict()
 
         print "\n\t- Setting users_queue"
-        user_count = 0
         for user_index, user_id in enumerate(users_to_recommend):
-            if user_count > self.MAX_USERS_TO_RECOMMEND:
-                break
-            user_count += 1
             users_queue.put((user_index, user_id))
 
         print "\n\t- Queue set ok, approximate number of users: ", users_queue.qsize()
