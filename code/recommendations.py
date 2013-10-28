@@ -65,7 +65,6 @@ def song_similarity_recommendation(read_json_data=False,
     print "\n\tRecommender initialized"
 
     stochastic_recommender.NUM_OF_PROCESSES = num_of_processes
-    stochastic_recommender.MAX_USERS_TO_RECOMMEND = max_number_of_users
 
     del songs_to_play_count
     print "\n\tDeleting songs_to_play_count"
