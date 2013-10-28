@@ -1,13 +1,9 @@
+import datetime
 import utils.utils as utils
 import random
 
 import multiprocessing
 import Queue
-
-# import os
-# import random
-# import sys
-# import time
 
 class Recommender(object):
     """
@@ -84,7 +80,7 @@ class StochasticRecommender(Recommender):
         current_indexes = [0] * len(self.predictors)
         recommended_songs = []
         recommended_count = 0
-        print "--- Combining recommendations"
+        print "\n\t--- Combining recommendations"
         while (recommended_count < self.tau):
             predictor_index = self._get_stochastic_index()
             next_song_index = current_indexes[predictor_index]
@@ -119,10 +115,10 @@ class StochasticRecommender(Recommender):
                 sorted_songs = []
 
                 if user_id in user_to_items_visible:
-                    print "--- Scoring items for user_id {}".format(user_id)
+                    print "\n\t--- Scoring items for user_id {}".format(user_id)
                     songs_score = predictor.score_items(user_to_items_visible[user_id],
                                                         self.all_items)
-                    print "=== Scored items for user_id {}".format(user_id)
+                    print "\n\t=== Scored items for user_id {}".format(user_id)
                     sorted_songs = sorted(songs_score.keys(),
                                           key=lambda s: songs_score[s],
                                           reverse=True)
@@ -144,9 +140,8 @@ class StochasticRecommender(Recommender):
             user_ids.append(user_id)
             print "\n\t- Finished user index={}, user_id={}".format(user_index, user_id)
 
-
-    @utils.log_time_spent("Method: recommend_to_users")
     def recommend_to_users(self, users_to_recommend, user_to_items_visible):
+        start_time = datetime.datetime.now()
         print "\n\t- Recommending to users"
 
         # dirty check to avoid errors
@@ -171,7 +166,7 @@ class StochasticRecommender(Recommender):
         for process_id in xrange(self.NUM_OF_PROCESSES):
             p = multiprocessing.Process(
                 target=self._recommend_to_user_worker,
-                args=(users_queue, user_to_items_visible, recommendations_dict,process_id)
+                args=(users_queue, user_to_items_visible, recommendations_dict, process_id)
             )
             p.start()
             print "\n\t- Starting process P{}".format(process_id)
@@ -185,5 +180,9 @@ class StochasticRecommender(Recommender):
         recommendations = [recommendations_dict[key] for key in sorted(recommendations_dict.keys())]
 
         print "Generated recommendations list"
+
+        end_time = datetime.datetime.now()
+        print "[recommend_to_users] Finished Recommend to Users - Took {} seconds".format((end_time-start_time).seconds)
+
         # list of lists of recommendations for each user
         return recommendations

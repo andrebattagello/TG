@@ -22,7 +22,11 @@ def generate_songs_to_users_json(songs_to_users, filename="results/songs_to_user
         json_dict = {song_id: list(song_set) for song_id, song_set in songs_to_users.items()}
         json.dump(json_dict, json_dump_file)
 
-def song_similarity_recommendation(read_json_data=False):
+
+def song_similarity_recommendation(read_json_data=False,
+                                   write_json_file=False,
+                                   num_of_processes=4,
+                                   max_number_of_users=100):
     training_data_filename = "basic_data/train_triplets.txt"
 
     # TODO: json.dumps pre computed
@@ -40,7 +44,8 @@ def song_similarity_recommendation(read_json_data=False):
 
     print "\n\t- Going to generate songs_to_users"
     songs_to_users = {}
-    if read_json_data:
+
+    if read_json_data and not write_json_file:
         print "\n\t Reading data from JSON file"
         with open(os.path.join(main.get_data_path(), "results/songs_to_users.json"), "r") as json_dump_file:
             songs_to_users_data = json.load(json_dump_file)
@@ -50,6 +55,8 @@ def song_similarity_recommendation(read_json_data=False):
 
     print "\n\t- Generated songs_to_users"
 
+    if write_json_file:
+        generate_songs_to_users_json(songs_to_users)
 
     songs_to_play_count = main.songs_to_play_count(filename=training_data_filename)
     print "\n\tGenerated songs to play count"
@@ -57,8 +64,8 @@ def song_similarity_recommendation(read_json_data=False):
     stochastic_recommender = recommender.StochasticRecommender(all_items=sorted_songs_by_play_count)
     print "\n\tRecommender initialized"
 
-    # TODO
-    # stochastic_recommender.NUM_OF_PROCESSES = 10
+    stochastic_recommender.NUM_OF_PROCESSES = num_of_processes
+    stochastic_recommender.MAX_USERS_TO_RECOMMEND = max_number_of_users
 
     del songs_to_play_count
     print "\n\tDeleting songs_to_play_count"

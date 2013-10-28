@@ -1,3 +1,5 @@
+
+import datetime
 import math
 import json
 
@@ -46,8 +48,8 @@ class SongSimilatiryPredictor(Predictor):
     def _pre_compute_all_scores(self, listened_items):
         pass
 
-    @utils.log_time_spent(log_message="Score items")
     def score_items(self, user_items, all_items):
+        start_time = datetime.datetime.now()
         songs_score = {}
         for song in all_items:
             songs_score[song] = 0.0
@@ -63,6 +65,8 @@ class SongSimilatiryPredictor(Predictor):
                     weight = intersection_set_size * denominator
                 # finished calculating weight
                 songs_score[song] += weight ** self.q
+        end_time = datetime.datetime.now()
+        print "[score items] Finished score_items - Took {} seconds".format((end_time-start_time).seconds)
         return songs_score
 
 
