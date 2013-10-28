@@ -40,6 +40,7 @@ class SongSimilatiryPredictor(Predictor):
     scores_cache = {}
 
 
+
     def __init__(self, songs_to_users):
         super(SongSimilatiryPredictor, self).__init__()
         self.songs_to_users = songs_to_users
@@ -54,15 +55,18 @@ class SongSimilatiryPredictor(Predictor):
         for song in all_items:
             songs_score[song] = 0.0
             for user_song in user_items:
-                weight = 0.0
-                # calculating weight
-                first_user_set_len = len(self.songs_to_users[song])
-                second_user_set_len = len(self.songs_to_users[user_song])
-                intersection_set_size = float(len(self.songs_to_users[song] & self.songs_to_users[user_song]))
-                if intersection_set_size > 0:
-                    denominator = (first_user_set_len ** -self.alfa *
-                                   second_user_set_len ** -(1.0-self.alfa))
-                    weight = intersection_set_size * denominator
+                weight = self.scores_cache.get(song + user_song)
+                if not weight:
+                    weight = 0.0
+                    # calculating weight not cached yet
+                    first_user_set_len = len(self.songs_to_users[song])
+                    second_user_set_len = len(self.songs_to_users[user_song])
+                    intersection_set_size = float(len(self.songs_to_users[song] & self.songs_to_users[user_song]))
+                    if intersection_set_size > 0:
+                        denominator = (first_user_set_len ** -self.alfa *
+                                       second_user_set_len ** -(1.0-self.alfa))
+                        weight = intersection_set_size * denominator
+                    self.scores_cache[song + user_song] = weight
                 # finished calculating weight
                 songs_score[song] += weight ** self.q
         return songs_score

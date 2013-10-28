@@ -83,7 +83,7 @@ class StochasticRecommender(Recommender):
         current_indexes = [0] * len(self.predictors)
         recommended_songs = []
         recommended_count = 0
-        print "--- Combining recommendations"
+        print "\n\t- Combining recommendations"
         while (recommended_count < self.tau):
             predictor_index = self._get_stochastic_index()
             next_song_index = current_indexes[predictor_index]
@@ -118,10 +118,10 @@ class StochasticRecommender(Recommender):
                 sorted_songs = []
 
                 if user_id in user_to_items_visible:
-                    print "--- Scoring items for user_id {}".format(user_id)
+                    print "\n\t--- Scoring items for user_id {}".format(user_id)
                     songs_score = predictor.score_items(user_to_items_visible[user_id],
                                                         self.all_items)
-                    print "=== Scored items for user_id {}".format(user_id)
+                    print "\n\t=== Scored items for user_id {}".format(user_id)
                     sorted_songs = sorted(songs_score.keys(),
                                           key=lambda s: songs_score[s],
                                           reverse=True)
@@ -182,3 +182,5 @@ class StochasticRecommender(Recommender):
         print "Generated recommendations list"
         # list of lists of recommendations for each user
         return recommendations
+
+
