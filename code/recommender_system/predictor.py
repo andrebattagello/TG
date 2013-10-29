@@ -47,13 +47,25 @@ class SongSimilatiryPredictor(Predictor):
     def _pre_cache_scores(self, listened_items, all_items):
         print "\n\t[Pre cache] Starting..."
         start_time = datetime.datetime.now()
+        count = 0
         for song in all_items:
             for other_song in listened_items:
+                count += 1
                 self._weight(song, other_song)
+                if count % 10000 == 0:
+                    current_time = datetime.datetime.now()
+                    print "[Pre caching items] Current elapsed time: {} seconds".format(
+                        (current_time-start_time).seconds
+                    )
+                    print "[Pre caching items] Current count in cache: ", count
+                    print "[Pre caching items] Average: {} insertions/sec".format(
+                        count/((current_time-start_time).seconds), ""
+                    )
         end_time = datetime.datetime.now()
         print "[Pre caching items] Took {} seconds".format(
             (end_time-start_time).seconds
         )
+        print "[Pre caching items] Total count: {}".format(count)
 
     def _weight(self, song, user_song):
         weight = self.scores_cache.get(song + user_song)
