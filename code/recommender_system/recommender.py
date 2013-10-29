@@ -94,53 +94,32 @@ class StochasticRecommender(Recommender):
 
         return recommended_songs
 
-    def _recommend_to_user_worker(self,
-                                  users_queue,
-                                  user_to_items_visible,
-                                  recommendations_dict,
-                                  process_id):
-        print "\n\tStarting Process with ID={}".format(process_id)
-        user_ids = []
-        while True:
-            try:
-                user_index, user_id = users_queue.get(block=True, timeout=5)
-            except Queue.Empty:
-                print "\n\t- Finished Process ID={}, thread quitting".format(process_id)
-                print "\n\t- Processed the following User IDs:", user_ids
-                break
+    def _recommend_to_user(self, user_id, user_to_items_visible):
+        predictors_recommendations = []
+        for predictor in self.predictors:
+            print "\n\tStarting predictor {}".format(predictor._id)
+            sorted_songs = []
+            if user_id in user_to_items_visible:
+                print "\n\t--- Scoring items for user_id {}".format(user_id)
+                songs_score = predictor.score_items(user_to_items_visible[user_id],
+                                                    self.all_items)
+                print "\n\t=== Scored items for user_id {}".format(user_id)
+                sorted_songs = sorted(songs_score.keys(),
+                                      key=lambda s: songs_score[s],
+                                      reverse=True)
+            else:
+                sorted_songs = self.all_items
 
-            predictors_recommendations = []
-            for predictor in self.predictors:
-                print "\n\tStarting predictor {}".format(predictor._id)
-                sorted_songs = []
+            valid_songs_to_recommend = self._filter_recommended_songs(user_id,
+                                                                      sorted_songs,
+                                                                      user_to_items_visible)
+            predictors_recommendations.append(valid_songs_to_recommend)
 
-                if user_id in user_to_items_visible:
-                    print "\n\t--- Scoring items for user_id {}".format(user_id)
-                    songs_score = predictor.score_items(user_to_items_visible[user_id],
-                                                        self.all_items)
-                    print "\n\t=== Scored items for user_id {}".format(user_id)
-                    sorted_songs = sorted(songs_score.keys(),
-                                          key=lambda s: songs_score[s],
-                                          reverse=True)
-                else:
-                    sorted_songs = self.all_items
+        return self.stochastic_recommendation(predictors_recommendations)
 
-                valid_songs_to_recommend = self._filter_recommended_songs(user_id,
-                                                                          sorted_songs,
-                                                                          user_to_items_visible)
-
-                print "\n\tFinished predictor: index={}, user_id={} / process={}".format(user_index,
-                                                                                         user_id,
-                                                                                         process_id)
-                predictors_recommendations.append(valid_songs_to_recommend)
-
-            recommendations_dict[user_index] = self.stochastic_recommendation(
-                predictors_recommendations
-            )
-            user_ids.append(user_id)
-            print "\n\t- Finished user index={}, user_id={}".format(user_index, user_id)
 
     def recommend_to_users(self, users_to_recommend, user_to_items_visible):
+        recommendations = []
         start_time = datetime.datetime.now()
         print "\n\t- Recommending to users"
 
@@ -148,34 +127,22 @@ class StochasticRecommender(Recommender):
         if len(self.predictors) != len(self.predictors_weight):
             raise ValueError("Predictors and its distributions don't match")
 
-        users_queue = multiprocessing.JoinableQueue()
-        manager = multiprocessing.Manager()
-        recommendations_dict = manager.dict()
+        listened_songs = set()
+        for user_id, song_set in users_to_recommend.items():
+            for song in song_set:
+                if song not in song_set:
+                    listened_songs.add(song)
 
-        print "\n\t- Setting users_queue"
-        for user_index, user_id in enumerate(users_to_recommend):
-            users_queue.put((user_index, user_id))
+        print "\n\t- Listened songs setup ok"
 
-        print "\n\t- Queue set ok, approximate number of users: ", users_queue.qsize()
+        for predictor in self.predictors:
+            predictor._pre_cache_scores(listened_songs, self.all_items)
 
-        processes = []
-        for process_id in xrange(self.NUM_OF_PROCESSES):
-            p = multiprocessing.Process(
-                target=self._recommend_to_user_worker,
-                args=(users_queue, user_to_items_visible, recommendations_dict, process_id)
-            )
-            p.start()
-            print "\n\t- Starting process P{}".format(process_id)
-            processes.append(p)
+        print "\n\t Cached scores for listened songs!"
 
-        print "\n\t- Waiting processes to finish"
-        for p in processes:
-            p.join()
-
-        print "\n\t- Processes finished"
-        recommendations = [recommendations_dict[key] for key in sorted(recommendations_dict.keys())]
-
-        print "Generated recommendations list"
+        for user_id in users_to_recommend:
+            user_recomendations = self._recommend_to_user(user_id, user_to_items_visible)
+            recommendations.append(user_recomendations)
 
         end_time = datetime.datetime.now()
         print "[recommend_to_users] Finished Recommend to Users - Took {} seconds".format((end_time-start_time).seconds)

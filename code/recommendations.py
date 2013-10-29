@@ -25,7 +25,7 @@ def generate_songs_to_users_json(songs_to_users, filename="results/songs_to_user
 
 def song_similarity_recommendation(read_json_data=False,
                                    write_json_file=False,
-                                   num_of_processes=3,
+                                   num_of_processes=4,
                                    recommended_users_ratio=0.0001):
     training_data_filename = "basic_data/train_triplets.txt"
 
