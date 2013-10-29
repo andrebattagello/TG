@@ -128,9 +128,9 @@ class StochasticRecommender(Recommender):
             raise ValueError("Predictors and its distributions don't match")
 
         listened_songs = set()
-        for user_id, song_set in users_to_recommend.items():
-            for song in song_set:
-                if song not in song_set:
+        for user_id in users_to_recommend:
+            for song in user_to_items_visible[user_id]:
+                if song not in listened_songs:
                     listened_songs.add(song)
 
         print "\n\t- Listened songs setup ok"
