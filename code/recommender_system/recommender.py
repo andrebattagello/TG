@@ -127,11 +127,29 @@ class StochasticRecommender(Recommender):
         if len(self.predictors) != len(self.predictors_weight):
             raise ValueError("Predictors and its distributions don't match")
 
-        listened_songs = set()
-        for user_id in users_to_recommend:
-            for song in user_to_items_visible[user_id]:
-                if song not in listened_songs:
-                    listened_songs.add(song)
+        def _sort_by_most_popular(user_to_items_visible):
+            song_to_play_count = {}
+            for user_id, user_songs in user_to_items_visible.items():
+                for song in user_songs:
+                    if song not in song_to_play_count:
+                        song_to_play_count[song] = 0
+                    else:
+                        song_to_play_count[song] += 1
+            return sorted(song_to_play_count.keys(),
+                          key=lambda s:song_to_play_count[s], reverse=True)
+
+            sorted(d.keys(),
+                  key=lambda s: d[s],
+                  reverse=True)
+
+        songs_ordered_by_popularity = _sort_by_most_popular(user_to_items_visible)
+
+        cutoff = int(0.1 * len(songs_ordered_by_popularity))
+        print "number of songs for caching: ", cutoff
+        for index, song in enumerate(songs_ordered_by_popularity):
+            if index > cutoff:
+                break
+            listened_songs.add(song)
 
         print "\n\t- Listened songs setup ok"
 

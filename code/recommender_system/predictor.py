@@ -51,8 +51,8 @@ class SongSimilatiryPredictor(Predictor):
         for song in all_items:
             for other_song in listened_items:
                 count += 1
-                self._weight(song, other_song)
-                if count % 10000 == 0:
+                self._weight(song, other_song, cache_result=True)
+                if count % 1000000 == 0:
                     current_time = datetime.datetime.now()
                     print "[Pre caching items] Current elapsed time: {} seconds".format(
                         (current_time-start_time).seconds
@@ -67,7 +67,7 @@ class SongSimilatiryPredictor(Predictor):
         )
         print "[Pre caching items] Total count: {}".format(count)
 
-    def _weight(self, song, user_song):
+    def _weight(self, song, user_song, cache_result=False):
         weight = self.scores_cache.get(song + user_song)
         if not weight:
             weight = 0.0
@@ -81,7 +81,8 @@ class SongSimilatiryPredictor(Predictor):
                     (first_user_set_len ** -self.alfa) * (second_user_set_len ** -(1.0-self.alfa))
                 )
                 weight = intersection_set_size * denominator
-            self.scores_cache[song + user_song] = weight
+            if cache_result:
+                self.scores_cache[song + user_song] = weight
         return weight
 
     def score_items(self, user_items, all_items):
