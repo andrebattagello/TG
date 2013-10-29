@@ -52,7 +52,7 @@ class SongSimilatiryPredictor(Predictor):
             for other_song in listened_items:
                 count += 1
                 self._weight(song, other_song, cache_result=True)
-                if count % 1000000 == 0:
+                if count % 10000000 == 0:
                     current_time = datetime.datetime.now()
                     print "[Pre caching items] Current elapsed time: {} seconds".format(
                         (current_time-start_time).seconds

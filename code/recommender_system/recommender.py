@@ -1,9 +1,9 @@
 import datetime
-import utils.utils as utils
+import json
+import main
+import os
 import random
 
-import multiprocessing
-import Queue
 
 class Recommender(object):
     """
@@ -138,14 +138,10 @@ class StochasticRecommender(Recommender):
             return sorted(song_to_play_count.keys(),
                           key=lambda s:song_to_play_count[s], reverse=True)
 
-            sorted(d.keys(),
-                  key=lambda s: d[s],
-                  reverse=True)
-
         songs_ordered_by_popularity = _sort_by_most_popular(user_to_items_visible)
 
         listened_songs = set()
-        cutoff = int(0.01 * len(songs_ordered_by_popularity))
+        cutoff = int(0.1 * len(songs_ordered_by_popularity))
         print "number of songs for caching: ", cutoff
         for index, song in enumerate(songs_ordered_by_popularity):
             if index > cutoff:
@@ -156,6 +152,9 @@ class StochasticRecommender(Recommender):
 
         for predictor in self.predictors:
             predictor._pre_cache_scores(listened_songs, self.all_items)
+            with open(os.path.join(main.get_data_path(), "results/scores_cache_{}".format(predictor._id)), "w") as json_dump_file:
+                print "\n\tGenerating songs_score dump file"
+                json.dump(predictor.scores_cache, json_dump_file)
 
         print "\n\t Cached scores for listened songs!"
 
