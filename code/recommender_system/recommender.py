@@ -144,7 +144,8 @@ class StochasticRecommender(Recommender):
 
         songs_ordered_by_popularity = _sort_by_most_popular(user_to_items_visible)
 
-        cutoff = int(0.1 * len(songs_ordered_by_popularity))
+        listened_songs = set()
+        cutoff = int(0.01 * len(songs_ordered_by_popularity))
         print "number of songs for caching: ", cutoff
         for index, song in enumerate(songs_ordered_by_popularity):
             if index > cutoff:
