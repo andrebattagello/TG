@@ -1,10 +1,4 @@
-
 import datetime
-import math
-import json
-
-import collections
-from utils import utils
 
 class Predictor(object):
     """
@@ -44,7 +38,6 @@ class SongSimilatiryPredictor(Predictor):
         super(SongSimilatiryPredictor, self).__init__()
         self.songs_to_users = songs_to_users
 
-    # TODO: implement this!
     def _pre_compute_all_scores(self, listened_items, all_items):
         pass
 
@@ -62,6 +55,7 @@ class SongSimilatiryPredictor(Predictor):
                 if intersection_set_size > 0:
                     denominator = (first_user_set_len ** -self.alfa *
                                    second_user_set_len ** -(1.0-self.alfa))
+                    # TODO: weight is an array, that computes the results for different alfas
                     weight = intersection_set_size * denominator
                 # finished calculating weight
                 songs_score[song] += weight ** self.q

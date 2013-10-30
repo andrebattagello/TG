@@ -5,15 +5,21 @@ export WORKON_HOME=$HOME/.virtualenvs
 source /usr/bin/virtualenvwrapper.sh
 workon crosscompute
 
+TODO (branch optimizing-code):
+[ ] save scores for each user without computing `score ** q`
+[ ] run the recommendations for the same users
+    (sample once, instead of generate the evaluation data everytime)
+[ ] generate the listening history for the users above
+
 
 
 TODO:
-[ ] Save results
-[ ] Pass default parameters to functions:
-    [ ] number of users in simulation
-    [ ] evaluation ratio
-    [ ] number of users to recommend
-    [ ] read from JSON data
+[x] Save results
+[x] Pass default parameters to functions:
+    [x] number of users in simulation
+    [x] evaluation ratio
+    [x] number of users to recommend
+    [x] read from JSON data
 
 
 Roadmap / Next steps:
