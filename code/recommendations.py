@@ -81,6 +81,7 @@ def song_similarity_recommendation(read_json_data=False,
         users_to_songs_visible.keys(),
         users_to_songs_visible
     )
+
     print "\n\tFinished generating recommendations"
     listened_songs = [song_set for song_set in users_to_songs_complete.values()]
     mapk = metrics.mAPk(listened_songs, recommendations)
@@ -105,4 +106,7 @@ def song_similarity_recommendation(read_json_data=False,
 
 
 if __name__ == '__main__':
-    song_similarity_recommendation()
+    song_similarity_recommendation(read_json_data=False,
+                                   write_json_file=False,
+                                   num_of_processes=10,
+                                   recommended_users_ratio=0.01)
