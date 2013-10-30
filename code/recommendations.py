@@ -33,8 +33,8 @@ def song_similarity_recommendation(num_of_processes=3,
         listened_user_to_songs[user_data["user_id"]] = user_data["listened_songs"]
     print "\tLoaded test users data correctly"
 
-    songs_to_users = data_utils.load_json(location="input/songs_to_users.json")
-    print "\n\tLoaded songs_to_users.json!"
+    songs_to_users = data_utils.songs_to_users(filename=training_data_filename)
+    print "\n\t- Generated songs_to_users"
 
     songs_to_play_count = data_utils.songs_to_play_count(filename=training_data_filename)
     print "\n\tGenerated songs to play count"
