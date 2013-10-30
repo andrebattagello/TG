@@ -1,7 +1,7 @@
 import datetime
 import json
 import os
-import data.data_utils as data_utils
+import data_utils.data_utils as data_utils
 
 import utils.metrics as metrics
 
