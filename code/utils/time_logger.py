@@ -7,7 +7,7 @@ def log_time_spent(log_message="Time spent"):
         @functools.wraps(decorated)
         def decorator(*args, **kwargs):
             start_time = datetime.datetime.now()
-            print "\n\t[Starting {}]".format(decorated.__name__)
+            print "\t[Starting {}]".format(decorated.__name__)
             return_value = decorated(*args, **kwargs)
             end_time = datetime.datetime.now()
             seconds_spent = (end_time - start_time).seconds

@@ -15,15 +15,15 @@ def _sorted_dict(d):
                   reverse=True)
 
 
-def song_similarity_recommendation(read_json_data=False,
-                                   write_json_file=False,
-                                   num_of_processes=3,
+def song_similarity_recommendation(num_of_processes=3,
                                    num_of_users=1000,
                                    recommended_users_ratio=0.0001):
     training_data_filename = "basic_data/train_triplets.txt"
 
     test_users = data_utils.load_test_users(test_users_index=1)
     print "\tGenerated test users"
+    print "Number of users in test set: {}".format(len(test_users))
+    print "Recommending to {} users".format(num_of_users)
 
     user_ids = [user_data["user_id"] for user_data in test_users[:num_of_users]]
     visible_user_to_songs = {}
@@ -33,8 +33,8 @@ def song_similarity_recommendation(read_json_data=False,
         listened_user_to_songs[user_data["user_id"]] = user_data["listened_songs"]
     print "\tLoaded test users data correctly"
 
-    songs_to_users = data_utils.songs_to_users(filename=training_data_filename)
-    print "\n\t- Generated songs_to_users"
+    songs_to_users = data_utils.load_json(location="input/songs_to_users.json")
+    print "\n\tLoaded songs_to_users.json!"
 
     songs_to_play_count = data_utils.songs_to_play_count(filename=training_data_filename)
     print "\n\tGenerated songs to play count"
