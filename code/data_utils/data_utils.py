@@ -52,7 +52,7 @@ def load_json(location=None):
 
 #---------------------------------------------------------------------------------------------------
 # File/Data manipulation utilities
-def generate_test_users(test_users_index=1):
+def generate_test_users(test_users_index=1, users_ratio=0.01):
     """
     This method generates a new set of test users
     When running the scripts for metrics calculation, I'll use the same set of users
@@ -61,7 +61,7 @@ def generate_test_users(test_users_index=1):
     users_to_songs_dict = users_to_songs(filename=training_data_filename)
     training_users = generate_evaluation_data(
         users_to_songs_dict,
-        ratio=0.001  #1000 users
+        ratio=users_ratio
     )
 
     new_test_users_filename = "input/training_users_{}.json".format(test_users_index)
