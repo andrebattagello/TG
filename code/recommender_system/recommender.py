@@ -131,8 +131,6 @@ class StochasticRecommender(Recommender):
                                                         self.all_items)
                     print "\n\t=== Scored items for user_id {}".format(user_id)
 
-                    # TODO: generalize to the case where there's no distribution of parameters
-                    # or consider that there's only 1 q even if there's no distribution :)
                     for q in predictor.q_distribution:
                         sorted_songs[q] = sorted(songs_score[q].keys(),
                                                  key=lambda s: songs_score[q][s],

@@ -32,15 +32,14 @@ class SongSimilatiryPredictor(Predictor):
 
     _id = "song_similarity"
     q = 3.0 # locality ponderation : TODO: find a better name
-    alfa = 0.13
+    alfa = 0.1
 
-    alfa_distribution = [0.0, 0.25, 0.5, 0.75, 1.0]
-    q_distribution = [1.0, 2.0, 3.0, 4.0, 5.0] # if it's fast, add 6.0 and 7.0
+    q_distribution = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0] # if it's fast, add 6.0 and 7.0
 
-
-    def __init__(self, songs_to_users):
+    def __init__(self, songs_to_users, alfa=0.1):
         super(SongSimilatiryPredictor, self).__init__()
         self.songs_to_users = songs_to_users
+        self.alfa = alfa
 
     def _pre_compute_all_scores(self, listened_items, all_items):
         pass

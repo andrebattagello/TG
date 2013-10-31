@@ -17,7 +17,6 @@ def _sorted_dict(d):
 
 def song_similarity_recommendation(num_of_processes=3,
                                    num_of_users=1000,
-                                   q=3.0,
                                    alfa=0.1):
     training_data_filename = "basic_data/train_triplets.txt"
 
@@ -51,7 +50,10 @@ def song_similarity_recommendation(num_of_processes=3,
     del sorted_songs_by_play_count
     print "\n\tDeleted sorted_songs_by_play_count"
 
-    song_similarity_predictor = predictor.SongSimilatiryPredictor(songs_to_users=songs_to_users)
+    song_similarity_predictor = predictor.SongSimilatiryPredictor(
+        songs_to_users=songs_to_users,
+        alfa=alfa
+    )
     print "\n\tPredictor initialized ok"
     stochastic_recommender.add_predictor(song_similarity_predictor)
     stochastic_recommender.add_predictors_weight([1.0])
@@ -76,13 +78,13 @@ def song_similarity_recommendation(num_of_processes=3,
         # "mapk": mapk
     }
 
-    additional_tag = "q={},alfa={}".format(str(q), str(alfa))
+    additional_tag = "alfa={}".format(str(alfa))
+
     # Save results to an external file
     results_filename = "results/song_similarity_recommendation_results_{}-{}.json".format(
         datetime.datetime.now().strftime("%d-%m-%H-%M-%S"),
         additional_tag,
     )
-    # TODO: use "save_json method"
     with open(os.path.join(data_utils.get_data_path(), results_filename), "w") as json_results_file:
         json.dump(results, json_results_file)
 
