@@ -70,12 +70,13 @@ def song_similarity_recommendation(num_of_processes=3,
     # mapk = metrics.mAPk(listened_songs, recommendations)
     # print "\n\t*** Mean Average Precision", mapk
 
+    # TODO: combine the results for all the Q in the distributions
+
     results = {
         "number_of_users": len(recommendations),
         "user_ids": user_ids,
         "recommendations": recommendations,
         "listened_songs": [list(song_set) for song_set in listened_songs],
-        # "mapk": mapk
     }
 
     additional_tag = "alfa={}".format(str(alfa))
