@@ -23,7 +23,7 @@ def song_similarity_recommendation(num_of_processes=3,
 
     test_users = data_utils.load_test_users(test_users_index=1)
     print "\tGenerated test users"
-    print "\nNumber of users in test set: {}".format(len(test_users))
+    print "\tNumber of users in test set: {}".format(len(test_users))
     print "\tRecommending to {} users".format(num_of_users)
 
     user_ids = [user_data["user_id"] for user_data in test_users[:num_of_users]]

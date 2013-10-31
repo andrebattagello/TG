@@ -94,6 +94,7 @@ class StochasticRecommender(Recommender):
         while (recommended_count < self.tau):
             predictor_index = self._get_stochastic_index()
             next_song_index = current_indexes[predictor_index]
+            # TODO: refactor this to combine a dictionary ?
             chosen_recommendation = all_recommendations[predictor_index]
 
             chosen_song = chosen_recommendation[next_song_index]
@@ -119,7 +120,7 @@ class StochasticRecommender(Recommender):
                 print "\n\t- Processed the following User IDs:", user_ids
                 break
 
-            predictors_recommendations = []
+            predictors_recommendations = {}
             for predictor in self.predictors:
                 sorted_songs = {}
                 print "\n\tStarting predictor {}".format(predictor._id)
