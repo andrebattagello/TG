@@ -17,13 +17,14 @@ def _sorted_dict(d):
 
 def song_similarity_recommendation(num_of_processes=3,
                                    num_of_users=1000,
-                                   recommended_users_ratio=0.0001):
+                                   q=3.0,
+                                   alfa=0.1):
     training_data_filename = "basic_data/train_triplets.txt"
 
     test_users = data_utils.load_test_users(test_users_index=1)
     print "\tGenerated test users"
-    print "Number of users in test set: {}".format(len(test_users))
-    print "Recommending to {} users".format(num_of_users)
+    print "\nNumber of users in test set: {}".format(len(test_users))
+    print "\tRecommending to {} users".format(num_of_users)
 
     user_ids = [user_data["user_id"] for user_data in test_users[:num_of_users]]
     visible_user_to_songs = {}
@@ -63,21 +64,25 @@ def song_similarity_recommendation(num_of_processes=3,
 
     print "\n\tFinished generating recommendations"
     listened_songs = [listened_user_to_songs[user_id] for user_id in user_ids]
-    mapk = metrics.mAPk(listened_songs, recommendations)
-    print "Mean Average Precision", mapk
-    print "Number of recommendations:", len(recommendations)
+    print "\n\t--- Number of recommendations:", len(recommendations)
+    # mapk = metrics.mAPk(listened_songs, recommendations)
+    # print "\n\t*** Mean Average Precision", mapk
 
     results = {
         "number_of_users": len(recommendations),
+        "user_ids": user_ids,
         "recommendations": recommendations,
         "listened_songs": [list(song_set) for song_set in listened_songs],
-        "mapk": mapk,
+        # "mapk": mapk
     }
 
+    additional_tag = "q={},alfa={}".format(str(q), str(alfa))
     # Save results to an external file
-    results_filename = "results/song_similarity_recommendation_results_{}.json".format(
-        datetime.datetime.now().strftime("%d-%m-%H-%M-%S")
+    results_filename = "results/song_similarity_recommendation_results_{}-{}.json".format(
+        datetime.datetime.now().strftime("%d-%m-%H-%M-%S"),
+        additional_tag,
     )
+    # TODO: use "save_json method"
     with open(os.path.join(data_utils.get_data_path(), results_filename), "w") as json_results_file:
         json.dump(results, json_results_file)
 
@@ -87,5 +92,4 @@ def song_similarity_recommendation(num_of_processes=3,
 if __name__ == '__main__':
     song_similarity_recommendation(read_json_data=False,
                                    write_json_file=False,
-                                   num_of_processes=10,
-                                   recommended_users_ratio=0.01)
+                                   num_of_processes=10)

@@ -121,32 +121,38 @@ class StochasticRecommender(Recommender):
 
             predictors_recommendations = []
             for predictor in self.predictors:
+                sorted_songs = {}
                 print "\n\tStarting predictor {}".format(predictor._id)
-                sorted_songs = []
 
                 if user_id in user_to_items_visible:
                     print "\n\t--- Scoring items for user_id {}".format(user_id)
                     songs_score = predictor.score_items(user_to_items_visible[user_id],
                                                         self.all_items)
                     print "\n\t=== Scored items for user_id {}".format(user_id)
-                    sorted_songs = sorted(songs_score.keys(),
-                                          key=lambda s: songs_score[s],
-                                          reverse=True)
-                else:
-                    sorted_songs = self.all_items
 
-                valid_songs_to_recommend = self._filter_recommended_songs(user_id,
-                                                                          sorted_songs,
-                                                                          user_to_items_visible)
+                    # TODO: generalize to the case where there's no distribution of parameters
+                    # or consider that there's only 1 q even if there's no distribution :)
+                    for q in predictor.q_distribution:
+                        sorted_songs[q] = sorted(songs_score[q].keys(),
+                                                 key=lambda s: songs_score[q][s],
+                                                 reverse=True)
+                else:
+                    print "******************WAT, should't be here!!!**********************"
+                    for q in predictor.q_distribution:
+                        sorted_songs[q] = self.all_items
+
+                predictor_recommendation = {}
+                for q in predictor.q_distribution:
+                    predictor_recommendation[q] = self._filter_recommended_songs(user_id,
+                                                                                 sorted_songs[q],
+                                                                                 user_to_items_visible)
 
                 print "\n\tFinished predictor: index={}, user_id={} / process={}".format(user_index,
                                                                                          user_id,
                                                                                          process_id)
-                predictors_recommendations.append(valid_songs_to_recommend)
+                predictors_recommendations[predictor._id] = predictor_recommendation
 
-            recommendations_dict[user_id] = self.stochastic_recommendation(
-                predictors_recommendations
-            )
+            recommendations_dict[user_id] = predictors_recommendations
             user_ids.append(user_id)
             print "\n\t- Finished user index={}, user_id={}".format(user_index, user_id)
 
@@ -184,11 +190,11 @@ class StochasticRecommender(Recommender):
 
         print "\n\t- Processes finished"
 
-        recommendations = [recommendations_dict[user_id] for user_id in users_to_recommend]
+        predictors_recommendations = [recommendations_dict[user_id] for user_id in users_to_recommend]
         print "Generated recommendations list"
 
         end_time = datetime.datetime.now()
         print "[recommend_to_users] Finished Recommend to Users - Took {} seconds".format((end_time-start_time).seconds)
 
         # list of lists of recommendations for each user
-        return recommendations
+        return predictors_recommendations

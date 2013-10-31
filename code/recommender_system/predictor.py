@@ -34,6 +34,10 @@ class SongSimilatiryPredictor(Predictor):
     q = 3.0 # locality ponderation : TODO: find a better name
     alfa = 0.13
 
+    alfa_distribution = [0.0, 0.25, 0.5, 0.75, 1.0]
+    q_distribution = [1.0, 2.0, 3.0, 4.0, 5.0] # if it's fast, add 6.0 and 7.0
+
+
     def __init__(self, songs_to_users):
         super(SongSimilatiryPredictor, self).__init__()
         self.songs_to_users = songs_to_users
@@ -44,8 +48,11 @@ class SongSimilatiryPredictor(Predictor):
     def score_items(self, user_items, all_items):
         start_time = datetime.datetime.now()
         songs_score = {}
+        for q in self.q_distribution:
+            songs_score[q] = {}
         for song in all_items:
-            songs_score[song] = 0.0
+            for q in self.q_distribution:
+                songs_score[q][song] = 0.0
             for user_song in user_items:
                 weight = 0.0
                 # calculating weight
@@ -58,7 +65,8 @@ class SongSimilatiryPredictor(Predictor):
                     # TODO: weight is an array, that computes the results for different alfas
                     weight = intersection_set_size * denominator
                 # finished calculating weight
-                songs_score[song] += weight ** self.q
+                for q in self.q_distribution:
+                    songs_score[q][song] += weight ** q
         end_time = datetime.datetime.now()
         print "[score items] Finished score_items - Took {} seconds".format((end_time-start_time).seconds)
         return songs_score
